@@ -38,6 +38,11 @@
       }
     }
     </script>
+    
+    <!-- Add these lines for PWA support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 <body>
     <h1>Web-based NES Emulator with Gamepad API Support</h1>
@@ -59,5 +64,14 @@
 
     <script src="https://unpkg.com/jsnes/dist/jsnes.min.js"></script>
     <script type="module" src="/src/main.ts"></script>
+    
+    <!-- Add this line for PWA support -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((reg) => console.log('Service worker registered:', reg))
+                .catch((err) => console.log('Service worker registration failed:', err));
+        }
+    </script>
 </body>
 </html>
