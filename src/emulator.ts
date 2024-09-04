@@ -29,7 +29,11 @@ export class Emulator {
         this.frameBuffer32 = new Uint32Array(this.frameBuffer);
 
         this.romInput = document.getElementById('rom-input') as HTMLInputElement;
-        this.romInput.addEventListener('change', this.loadROM.bind(this));
+        const changeHandler = (event: Event) =>{
+            const file = (event.target as HTMLInputElement).files?.[0];
+            this.loadROM(file);
+        }
+        this.romInput.addEventListener('change', changeHandler);
 
         this.fullscreenBtn = document.getElementById('fullscreen-btn')!;
         this.fullscreenBtn.addEventListener('click', this.toggleFullscreen.bind(this));
@@ -64,8 +68,7 @@ export class Emulator {
         this.gamepadStatus.textContent = `Gamepads connected: ${Object.keys(this.gamepads).length}`;
     }
 
-    private loadROM(event: Event): void {
-        const file = (event.target as HTMLInputElement).files?.[0];
+    public loadROM(file?: File): void {
         if (file) {
             const reader = new FileReader();
             reader.onload = (e: ProgressEvent<FileReader>) => {

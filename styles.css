@@ -22,6 +22,7 @@ body, html {
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-width: 300px;
 }
 #nes-canvas {
     image-rendering: pixelated;
@@ -71,4 +72,37 @@ body, html {
 }
 :fullscreen #controls:hover {
     opacity: 1;
+}
+#game-search {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: white;
+}
+#game-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#game-list li {
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px 0;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+}
+
+#game-list li:hover {
+    background-color: #e0e0e0;
+}
+.game-item {
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.game-item:hover {
+    background-color: #444;
 }
