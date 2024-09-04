@@ -106,3 +106,8 @@ body, html {
 .game-item:hover {
     background-color: #444;
 }
+.game-item.selected {
+    background-color: #e0e0e0;
+    color: #1a1a1a;
+    font-weight: bold;
+}
