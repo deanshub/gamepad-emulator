@@ -12,6 +12,7 @@ export class Emulator {
     // @ts-expect-error-next-line
     private frameId: number | null;
     private imageData: ImageData | null;
+    // @ts-expect-error-next-line
     private keyboardMapping: { [key: string]: { player: number; button: number } };
 
     constructor() {
