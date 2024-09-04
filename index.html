@@ -3,21 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web-based NES Emulator</title>
+    <title>Web-based NES Emulator with Gamepad API Support | Play NES Games Online</title>
+    <meta name="description" content="Experience NES gaming with modern Gamepad API support. Play classic NES games in your browser using gamepads. Showcase of HTML5 Gamepad API implementation.">
+    <meta name="keywords" content="NES emulator, Gamepad API, web-based emulator, HTML5 games, retro gaming, browser games, JavaScript gamepad">
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gamepad-emulator.vercel.app/">
+    <meta property="og:title" content="NES Emulator with Gamepad API | Play Online">
+    <meta property="og:description" content="Play NES games in your browser with Gamepad API support. Experience retro gaming with modern web technologies.">
+    <meta property="og:image" content="https://gamepad-emulator.vercel.app/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://gamepad-emulator.vercel.app/">
+    <meta property="twitter:title" content="NES Emulator with Gamepad API | Play Online">
+    <meta property="twitter:description" content="Play NES games in your browser with Gamepad API support. Experience retro gaming with modern web technologies.">
+    <meta property="twitter:image" content="https://gamepad-emulator.vercel.app/twitter-image.jpg">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Web-based NES Emulator with Gamepad API Support",
+      "url": "https://gamepad-emulator.vercel.app/",
+      "description": "Play classic NES games in your browser with modern Gamepad API support. Showcase of HTML5 Gamepad API implementation.",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
 </head>
 <body>
+    <h1>Web-based NES Emulator with Gamepad API Support</h1>
     <div id="emulator-container">
         <canvas id="nes-canvas" width="256" height="240"></canvas>
         <div id="controls">
-            <input type="text" id="game-search" placeholder="Search games...">
+            <input type="text" id="game-search" placeholder="Search NES games...">
             <ul id="game-list"></ul>
             <input type="file" id="rom-input" accept=".nes">
-            <label for="rom-input" id="rom-label" class="btn">Load ROM</label>
+            <label for="rom-input" id="rom-label" class="btn">Load NES ROM</label>
             <button id="fullscreen-btn" class="btn">Fullscreen</button>
-            <div id="gamepad-status"></div>
+            <div id="gamepad-status">Gamepad API Status: <span id="gamepad-connection"></span></div>
         </div>
     </div>
+
+    <footer>
+        <p>Experience the power of the HTML5 Gamepad API with our NES emulator. Connect your gamepad and play classic games!</p>
+    </footer>
 
     <script src="https://unpkg.com/jsnes/dist/jsnes.min.js"></script>
     <script type="module" src="/src/main.ts"></script>
