@@ -12,6 +12,7 @@ export class Emulator {
     // @ts-expect-error-next-line
     private frameId: number | null;
     private imageData: ImageData | null;
+    private keyboardMapping: { [key: string]: { player: number; button: number } };
 
     constructor() {
         this.canvas = document.getElementById('nes-canvas') as HTMLCanvasElement;
@@ -39,6 +40,8 @@ export class Emulator {
         this.fullscreenBtn.addEventListener('click', this.toggleFullscreen.bind(this));
 
         this.setupGamepadListeners();
+        this.setupKeyboardListeners();
+        this.setupKeyboardMapping();
         this.gameLoop();
 
         // Initial canvas scaling
@@ -147,6 +150,54 @@ export class Emulator {
                     this.nes.buttonUp(1, (window as any).jsnes.Controller.BUTTON_UP);
                     this.nes.buttonUp(1, (window as any).jsnes.Controller.BUTTON_DOWN);
                 }
+            }
+        }
+    }
+
+    private setupKeyboardMapping(): void {
+        const jsnes = (window as any).jsnes;
+        this.keyboardMapping = {
+            // Player 1 controls
+            'ArrowUp': { player: 1, button: jsnes.Controller.BUTTON_UP },
+            'ArrowDown': { player: 1, button: jsnes.Controller.BUTTON_DOWN },
+            'ArrowLeft': { player: 1, button: jsnes.Controller.BUTTON_LEFT },
+            'ArrowRight': { player: 1, button: jsnes.Controller.BUTTON_RIGHT },
+            'z': { player: 1, button: jsnes.Controller.BUTTON_A },
+            'x': { player: 1, button: jsnes.Controller.BUTTON_B },
+            'Enter': { player: 1, button: jsnes.Controller.BUTTON_START },
+            'Shift': { player: 1, button: jsnes.Controller.BUTTON_SELECT },
+
+            // Player 2 controls
+            'w': { player: 2, button: jsnes.Controller.BUTTON_UP },
+            's': { player: 2, button: jsnes.Controller.BUTTON_DOWN },
+            'a': { player: 2, button: jsnes.Controller.BUTTON_LEFT },
+            'd': { player: 2, button: jsnes.Controller.BUTTON_RIGHT },
+            'k': { player: 2, button: jsnes.Controller.BUTTON_A },
+            'l': { player: 2, button: jsnes.Controller.BUTTON_B },
+            '0': { player: 2, button: jsnes.Controller.BUTTON_START },
+            '9': { player: 2, button: jsnes.Controller.BUTTON_SELECT },
+        };
+    }
+
+    private setupKeyboardListeners(): void {
+        document.addEventListener('keydown', (e: KeyboardEvent) => this.handleKeyboardEvent(e, true));
+        document.addEventListener('keyup', (e: KeyboardEvent) => this.handleKeyboardEvent(e, false));
+    }
+
+    private handleKeyboardEvent(e: KeyboardEvent, isKeyDown: boolean): void {
+        // Ignore key events when the search input is focused
+        if (document.activeElement instanceof HTMLInputElement && document.activeElement.id === 'game-search') {
+            return;
+        }
+
+        const mapping = this.keyboardMapping[e.key];
+        if (mapping) {
+            e.preventDefault();
+            const { player, button } = mapping;
+            if (isKeyDown) {
+                this.nes.buttonDown(player, button);
+            } else {
+                this.nes.buttonUp(player, button);
             }
         }
     }

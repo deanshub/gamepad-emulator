@@ -17,3 +17,14 @@
   max-height: 200px;
   overflow-y: auto;
 }
+
+h1 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+}

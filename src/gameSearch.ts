@@ -60,6 +60,7 @@ export class GameSearch {
                 break;
             case 'Enter':
                 if (this.selectedIndex >= 0) {
+                    this.gameSearch.blur();
                     const selectedGame = gameItems[this.selectedIndex] as HTMLElement;
                     const path = this.games[parseInt(selectedGame.getAttribute('data-index')!)].path;
                     this.selectGame(path);
