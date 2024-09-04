@@ -9,6 +9,7 @@ export class Emulator {
     private frameBuffer32: Uint32Array;
     private romInput: HTMLInputElement;
     private fullscreenBtn: HTMLElement;
+    // @ts-expect-error-next-line
     private frameId: number | null;
     private imageData: ImageData | null;
 
