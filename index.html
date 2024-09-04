@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web-based NES Emulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="emulator-container">
+        <canvas id="nes-canvas" width="256" height="240"></canvas>
+        <div id="controls">
+            <input type="file" id="rom-input" accept=".nes">
+            <label for="rom-input" id="rom-label" class="btn">Load ROM</label>
+            <button id="fullscreen-btn" class="btn">Fullscreen</button>
+            <div id="gamepad-status"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/jsnes/dist/jsnes.min.js"></script>
+    <script src="emulator.js"></script>
+    <script>
+        // Initialize the emulator when the page loads
+        window.onload = () => {
+            new Emulator();
+        };
+    </script>
+</body>
+</html>
