@@ -111,3 +111,89 @@ body, html {
     color: #1a1a1a;
     font-weight: bold;
 }
+
+/* Touch controls styling */
+#touch-controls {
+    display: none; /* Hidden by default */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 300px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#touch-controls button {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 16px;
+    touch-action: manipulation;
+}
+
+#touch-controls button:active {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* D-pad layout */
+#touch-up, #touch-down, #touch-left, #touch-right {
+    position: absolute;
+}
+
+#touch-up { top: 0; left: 50%; transform: translateX(-50%); }
+#touch-down { bottom: 0; left: 50%; transform: translateX(-50%); }
+#touch-left { left: 0; top: 50%; transform: translateY(-50%); }
+#touch-right { right: 0; top: 50%; transform: translateY(-50%); }
+
+/* A, B buttons */
+#touch-a, #touch-b {
+    position: absolute;
+    right: 10px;
+}
+
+#touch-a { bottom: 80px; }
+#touch-b { bottom: 10px; }
+
+/* Start, Select buttons */
+#touch-start, #touch-select {
+    position: absolute;
+    bottom: 10px;
+}
+
+#touch-start { left: 25%; }
+#touch-select { left: 75%; }
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    #touch-controls {
+        display: block;
+    }
+
+    #controls {
+        display: none; /* Hide the regular controls on mobile */
+    }
+
+    #nes-canvas {
+        width: 100%;
+        height: calc(100% - 150px); /* Adjust canvas height to make room for touch controls */
+        object-fit: contain;
+    }
+}
+
+/* Hide touch controls in fullscreen mode */
+:fullscreen #touch-controls {
+    display: none;
+}
+
+/* For webkit browsers */
+:-webkit-full-screen #touch-controls {
+    display: none;
+}

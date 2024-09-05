@@ -23,6 +23,7 @@ export class Emulator {
     private audioVolume: number;
     private audioSamples: Float32Array;
     private audioSamplesIndex: number;
+    private touchControls: { [key: string]: HTMLElement };
 
     constructor() {
         this.canvas = document.getElementById('nes-canvas') as HTMLCanvasElement;
@@ -63,6 +64,7 @@ export class Emulator {
         this.setupGamepadListeners();
         this.setupKeyboardListeners();
         this.setupKeyboardMapping();
+        this.setupTouchControls();
 
         this.frameInterval = 1000 / 60; // 60 FPS
         this.intervalId = null;
@@ -247,6 +249,47 @@ export class Emulator {
                 this.nes.buttonDown(player, button);
             } else {
                 this.nes.buttonUp(player, button);
+            }
+        }
+    }
+
+    private setupTouchControls(): void {
+        this.touchControls = {
+            up: document.getElementById('touch-up')!,
+            down: document.getElementById('touch-down')!,
+            left: document.getElementById('touch-left')!,
+            right: document.getElementById('touch-right')!,
+            a: document.getElementById('touch-a')!,
+            b: document.getElementById('touch-b')!,
+            start: document.getElementById('touch-start')!,
+            select: document.getElementById('touch-select')!,
+        };
+
+        Object.entries(this.touchControls).forEach(([button, element]) => {
+            element.addEventListener('touchstart', (e) => this.handleTouchEvent(e, button, true));
+            element.addEventListener('touchend', (e) => this.handleTouchEvent(e, button, false));
+        });
+    }
+
+    private handleTouchEvent(e: TouchEvent, button: string, isPressed: boolean): void {
+        e.preventDefault();
+        const jsnes = (window as any).jsnes;
+        const buttonMapping: { [key: string]: number } = {
+            up: jsnes.Controller.BUTTON_UP,
+            down: jsnes.Controller.BUTTON_DOWN,
+            left: jsnes.Controller.BUTTON_LEFT,
+            right: jsnes.Controller.BUTTON_RIGHT,
+            a: jsnes.Controller.BUTTON_A,
+            b: jsnes.Controller.BUTTON_B,
+            start: jsnes.Controller.BUTTON_START,
+            select: jsnes.Controller.BUTTON_SELECT,
+        };
+
+        if (buttonMapping[button] !== undefined) {
+            if (isPressed) {
+                this.nes.buttonDown(1, buttonMapping[button]);
+            } else {
+                this.nes.buttonUp(1, buttonMapping[button]);
             }
         }
     }
