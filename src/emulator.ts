@@ -16,6 +16,13 @@ export class Emulator {
     private keyboardMapping: { [key: string]: { player: number; button: number } };
     private frameInterval: number;
     private intervalId: number | null;
+    private audioContext: AudioContext | null;
+    private scriptProcessor: ScriptProcessorNode | null;
+    // private audioSampleRate: number;
+    private audioBufferSize: number;
+    private audioVolume: number;
+    private audioSamples: Float32Array;
+    private audioSamplesIndex: number;
 
     constructor() {
         this.canvas = document.getElementById('nes-canvas') as HTMLCanvasElement;
@@ -23,9 +30,20 @@ export class Emulator {
         this.gamepadStatus = document.getElementById('gamepad-status')!;
         this.gamepads = {};
 
+        this.audioContext = null;
+        this.scriptProcessor = null;
+        // this.audioSampleRate = 44100;
+        this.audioBufferSize = 4096;
+        this.audioVolume = 1.0; // Ensure this is set to 1.0 (full volume)
+        this.audioSamples = new Float32Array(this.audioBufferSize * 2);
+        this.audioSamplesIndex = 0;
+
+        this.initAudio();
+
         this.nes = new (window as any).jsnes.NES({
             onFrame: this.onFrame.bind(this),
-            onStatusUpdate: console.log,
+            // onStatusUpdate: console.log,
+            onAudioSample: this.onAudioSample.bind(this),
         });
 
         this.frameBuffer = new ArrayBuffer(256 * 240 * 4);
@@ -56,6 +74,9 @@ export class Emulator {
 
         this.frameId = null;
         this.imageData = null;
+
+        // Add this line to start audio on user interaction
+        document.addEventListener('click', this.startAudio.bind(this), { once: true });
     }
 
     private setupGamepadListeners(): void {
@@ -84,6 +105,7 @@ export class Emulator {
                     const contents = e.target?.result as string;
                     this.nes.loadROM(contents);
                     this.start();
+                    this.startAudio(); // Make sure this is called
                     this.showMessage('ROM loaded successfully!', 'success');
                 } catch (error) {
                     console.error('Failed to load ROM:', error);
@@ -98,9 +120,24 @@ export class Emulator {
         }
     }
 
-    private start(): void {
+    public start(): void {
         if (this.intervalId === null) {
             this.intervalId = setInterval(() => this.frame(), this.frameInterval);
+            this.startAudio(); // Ensure audio is started when emulation starts
+        }
+    }
+
+    private startAudio(): void {
+        if (this.audioContext) {
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume().then(() => {
+                }).catch(error => {
+                    console.error('Failed to resume AudioContext:', error);
+                });
+            } else {
+            }
+        } else {
+            console.error('AudioContext is not initialized');
         }
     }
 
@@ -220,6 +257,10 @@ export class Emulator {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+        // Suspend audio context when stopping
+        if (this.audioContext) {
+            this.audioContext.suspend();
+        }
     }
 
     private toggleFullscreen(): void {
@@ -274,5 +315,62 @@ export class Emulator {
         setTimeout(() => {
             document.body.removeChild(messageElement);
         }, 3000);
+    }
+
+    private initAudio(): void {
+        try {
+            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            console.log('AudioContext created:', this.audioContext.state);
+            
+            this.scriptProcessor = this.audioContext.createScriptProcessor(this.audioBufferSize, 0, 2);
+            
+            this.scriptProcessor.onaudioprocess = this.onAudioProcess.bind(this);
+            this.scriptProcessor.connect(this.audioContext.destination);
+        } catch (error) {
+            console.error('Failed to initialize audio:', error);
+        }
+    }
+
+    private onAudioSample(left: number, right: number): void {
+        if (this.audioSamplesIndex < this.audioSamples.length - 1) {
+            this.audioSamples[this.audioSamplesIndex] = left;
+            this.audioSamples[this.audioSamplesIndex + 1] = right;
+            this.audioSamplesIndex += 2;
+
+            // if (this.audioSamplesIndex === 1000) {
+            //     console.log('Audio samples are being generated');
+            // }
+        }
+    }
+
+    private onAudioProcess(e: AudioProcessingEvent): void {
+        const outputBuffer = e.outputBuffer;
+        const leftChannel = outputBuffer.getChannelData(0);
+        const rightChannel = outputBuffer.getChannelData(1);
+
+        let nonZeroSamples = 0;
+        let maxSample = 0;
+
+        for (let i = 0; i < this.audioBufferSize; i++) {
+            const leftSample = this.audioSamples[i * 2] * this.audioVolume;
+            const rightSample = this.audioSamples[i * 2 + 1] * this.audioVolume;
+
+            leftChannel[i] = leftSample;
+            rightChannel[i] = rightSample;
+
+            maxSample = Math.max(maxSample, Math.abs(leftSample), Math.abs(rightSample));
+
+            if (leftSample !== 0 || rightSample !== 0) {
+                nonZeroSamples++;
+            }
+        }
+
+        // Reset the audio samples index
+        this.audioSamplesIndex = 0;
+    }
+
+    // Add a method to set the volume
+    public setVolume(volume: number): void {
+        this.audioVolume = Math.max(0, Math.min(1, volume));
     }
 }
