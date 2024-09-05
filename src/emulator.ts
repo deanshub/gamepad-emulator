@@ -211,8 +211,8 @@ export class Emulator {
             'ArrowDown': { player: 1, button: jsnes.Controller.BUTTON_DOWN },
             'ArrowLeft': { player: 1, button: jsnes.Controller.BUTTON_LEFT },
             'ArrowRight': { player: 1, button: jsnes.Controller.BUTTON_RIGHT },
-            'z': { player: 1, button: jsnes.Controller.BUTTON_A },
-            'x': { player: 1, button: jsnes.Controller.BUTTON_B },
+            'k': { player: 1, button: jsnes.Controller.BUTTON_A },
+            'l': { player: 1, button: jsnes.Controller.BUTTON_B },
             'Enter': { player: 1, button: jsnes.Controller.BUTTON_START },
             'Shift': { player: 1, button: jsnes.Controller.BUTTON_SELECT },
 
@@ -221,8 +221,8 @@ export class Emulator {
             's': { player: 2, button: jsnes.Controller.BUTTON_DOWN },
             'a': { player: 2, button: jsnes.Controller.BUTTON_LEFT },
             'd': { player: 2, button: jsnes.Controller.BUTTON_RIGHT },
-            'k': { player: 2, button: jsnes.Controller.BUTTON_A },
-            'l': { player: 2, button: jsnes.Controller.BUTTON_B },
+            'z': { player: 2, button: jsnes.Controller.BUTTON_A },
+            'x': { player: 2, button: jsnes.Controller.BUTTON_B },
             '0': { player: 2, button: jsnes.Controller.BUTTON_START },
             '9': { player: 2, button: jsnes.Controller.BUTTON_SELECT },
         };
