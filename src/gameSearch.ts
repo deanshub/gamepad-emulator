@@ -26,12 +26,12 @@ export class GameSearch {
 
     private renderGameList(games: any[]) {
         this.gameList.innerHTML = '';
-        games.forEach((game, index) => {
+        games.forEach((game) => {
             const gameElement = document.createElement('div');
             gameElement.className = 'game-item';
             gameElement.textContent = game.label;
             gameElement.addEventListener('click', () => this.selectGame(game.path));
-            gameElement.setAttribute('data-index', index.toString());
+            gameElement.setAttribute('data-index', this.games.indexOf(game).toString());
             this.gameList.appendChild(gameElement);
         });
         this.selectedIndex = -1;
@@ -43,6 +43,7 @@ export class GameSearch {
             game.label.toLowerCase().includes(searchTerm)
         );
         this.renderGameList(filteredGames);
+        this.selectedIndex = -1; // Reset the selected index when filtering
     }
 
     private handleKeyDown(event: KeyboardEvent) {
@@ -62,7 +63,8 @@ export class GameSearch {
                 if (this.selectedIndex >= 0) {
                     this.gameSearch.blur();
                     const selectedGame = gameItems[this.selectedIndex] as HTMLElement;
-                    const path = this.games[parseInt(selectedGame.getAttribute('data-index')!)].path;
+                    const gameIndex = parseInt(selectedGame.getAttribute('data-index')!);
+                    const path = this.games[gameIndex].path;
                     this.selectGame(path);
                 }
                 break;
