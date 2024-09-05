@@ -23,6 +23,8 @@ export class Emulator {
     private audioVolume: number;
     private audioSamples: Float32Array;
     private audioSamplesIndex: number;
+    private muteBtn: HTMLElement;
+    private isMuted: boolean = false;
 
     constructor() {
         this.canvas = document.getElementById('nes-canvas') as HTMLCanvasElement;
@@ -59,6 +61,9 @@ export class Emulator {
 
         this.fullscreenBtn = document.getElementById('fullscreen-btn')!;
         this.fullscreenBtn.addEventListener('click', this.toggleFullscreen.bind(this));
+
+        this.muteBtn = document.getElementById('mute-btn')!;
+        this.muteBtn.addEventListener('click', this.toggleMute.bind(this));
 
         this.setupGamepadListeners();
         this.setupKeyboardListeners();
@@ -371,6 +376,20 @@ export class Emulator {
 
     // Add a method to set the volume
     public setVolume(volume: number): void {
-        this.audioVolume = Math.max(0, Math.min(1, volume));
+        this.audioVolume = this.isMuted ? 0 : Math.max(0, Math.min(1, volume));
+    }
+
+    private toggleMute(): void {
+        this.isMuted = !this.isMuted;
+        this.audioVolume = this.isMuted ? 0 : 1;
+        this.updateMuteButtonUI();
+    }
+
+    private updateMuteButtonUI(): void {
+        if (this.isMuted) {
+            this.muteBtn.classList.add('muted');
+        } else {
+            this.muteBtn.classList.remove('muted');
+        }
     }
 }

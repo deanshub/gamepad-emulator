@@ -50,3 +50,14 @@ h1 {
   right: 2em;
   width: 4em;
 }
+
+#mute-btn {
+  position: absolute;
+  bottom: 1em;
+  left: 2em;
+  width: 4em;
+} 
+
+.muted {
+  background-color: red;
+}
