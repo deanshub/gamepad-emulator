@@ -14,6 +14,8 @@ export class Emulator {
     private imageData: ImageData | null;
     // @ts-expect-error-next-line
     private keyboardMapping: { [key: string]: { player: number; button: number } };
+    private frameInterval: number;
+    private intervalId: number | null;
 
     constructor() {
         this.canvas = document.getElementById('nes-canvas') as HTMLCanvasElement;
@@ -43,7 +45,9 @@ export class Emulator {
         this.setupGamepadListeners();
         this.setupKeyboardListeners();
         this.setupKeyboardMapping();
-        this.gameLoop();
+
+        this.frameInterval = 1000 / 60; // 60 FPS
+        this.intervalId = null;
 
         // Initial canvas scaling
         this.scaleCanvas();
@@ -95,13 +99,21 @@ export class Emulator {
     }
 
     private start(): void {
-        this.frameId = requestAnimationFrame(this.frame.bind(this));
+        if (this.intervalId === null) {
+            this.intervalId = setInterval(() => this.frame(), this.frameInterval);
+        }
     }
 
     private frame(): void {
         this.nes.frame();
         this.handleInput();
-        this.frameId = requestAnimationFrame(this.frame.bind(this));
+        this.drawFrame();
+    }
+
+    private drawFrame(): void {
+        if (this.imageData) {
+            this.ctx.putImageData(this.imageData, 0, 0);
+        }
     }
 
     private onFrame(frameBuffer: Uint32Array): void {
@@ -109,7 +121,6 @@ export class Emulator {
             this.frameBuffer32[i] = 0xFF000000 | frameBuffer[i];
         }
         this.imageData = new ImageData(this.frameBuffer8, 256, 240);
-        this.ctx.putImageData(this.imageData, 0, 0);
     }
 
     private handleInput(): void {
@@ -203,8 +214,12 @@ export class Emulator {
         }
     }
 
-    private gameLoop(): void {
-        requestAnimationFrame(() => this.gameLoop());
+    // Add a new method to stop the emulation
+    public stop(): void {
+        if (this.intervalId !== null) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
     }
 
     private toggleFullscreen(): void {
