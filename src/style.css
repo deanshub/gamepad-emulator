@@ -28,3 +28,25 @@ h1 {
   font-size: 2rem;
   font-weight: bold;
 }
+
+/* Add this new rule */
+/* #keyboard-mapping-legend {
+  display: block;
+} */
+
+/* Hide keyboard-mapping-legend in fullscreen mode */
+:fullscreen #controls {
+  display: none;
+}
+
+/* For webkit browsers */
+:-webkit-full-screen #controls {
+  display: none;
+}
+
+#fullscreen-btn {
+  position: absolute;
+  bottom: 1em;
+  right: 2em;
+  width: 4em;
+}
